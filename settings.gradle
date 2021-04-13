@@ -1,2 +1,4 @@
 rootProject.name = 'software-development-containers'
 
+include 'stocksClient'
+include 'stocksServer'
