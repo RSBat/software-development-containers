@@ -14,4 +14,5 @@
 
 # Запуск
 `./gradlew :stocksServer:docker`
+
 `./gradlew :stocksClient:test`
