@@ -24,7 +24,7 @@ class ExchangeClient(private val connection: ExchangeConnection) {
             user.addMoney(-result.totalPrice)
             user.addShares(name, amount)
         } else {
-            throw IllegalStateException(result.errorReason)
+            throw IllegalArgumentException(result.errorReason)
         }
     }
 
