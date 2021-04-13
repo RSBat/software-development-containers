@@ -12,7 +12,7 @@ class ExchangeConnection(exchangeUrl: String) {
     private val client = HttpClient.newHttpClient()
     private val uriBuilderFactory = DefaultUriBuilderFactory(exchangeUrl)
 
-    fun buyShares(stockName: String, amount: Long, maxPrice: Long): Long {
+    fun buyShares(stockName: String, amount: Long, maxPrice: Long): BuyResult {
         val uri = uriBuilderFactory.builder()
             .path("buy")
             .queryParam("name", stockName)
@@ -20,7 +20,11 @@ class ExchangeConnection(exchangeUrl: String) {
             .queryParam("maxPrice", maxPrice)
             .build()
         val response = sendRequest(uri)
-        return response.toLong()
+        return try {
+            BuyResult(true, response.toLong())
+        } catch (e: NumberFormatException) {
+            BuyResult(false, errorReason = response)
+        }
     }
 
     fun sellShares(stockName: String, amount: Long): Long {
@@ -46,4 +50,6 @@ class ExchangeConnection(exchangeUrl: String) {
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
         return response.body()
     }
+
+    data class BuyResult(val isSuccessful: Boolean, val totalPrice: Long = 0, val errorReason: String? = null)
 }

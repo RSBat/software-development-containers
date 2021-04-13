@@ -1,6 +1,7 @@
 package stocks
 
 import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 
 class ExchangeClient(private val connection: ExchangeConnection) {
     private val users = mutableListOf<User>()
@@ -18,9 +19,13 @@ class ExchangeClient(private val connection: ExchangeConnection) {
     fun buyShares(userId: Int, name: String, amount: Long) {
         val user = getUser(userId)
 
-        val price = connection.buyShares(name, amount, user.getBalance())
-        user.addMoney(-price)
-        user.addShares(name, amount)
+        val result = connection.buyShares(name, amount, user.getBalance())
+        if (result.isSuccessful) {
+            user.addMoney(-result.totalPrice)
+            user.addShares(name, amount)
+        } else {
+            throw IllegalStateException(result.errorReason)
+        }
     }
 
     fun sellShares(userId: Int, name: String, amount: Long) {
