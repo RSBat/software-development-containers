@@ -7,6 +7,8 @@ plugins {
 
     id 'org.jetbrains.kotlin.plugin.jpa' version "$kotlinVersion"
     id 'org.jetbrains.kotlin.plugin.spring' version "$kotlinVersion"
+
+    id "com.palantir.docker" version "0.26.0"
 }
 
 group 'org.example'
@@ -34,4 +36,16 @@ compileKotlin {
 
 test {
     useJUnitPlatform()
+}
+
+docker {
+    name "sd-container-testing:$version"
+    files "build/libs/stocksServer-${version}.jar"
+    dependsOn build
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'stocks.StocksApplicationKt'
+    }
 }
