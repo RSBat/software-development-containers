@@ -9,7 +9,7 @@ class StocksController {
     private val stockPrices = mutableMapOf<String, Long>()
     private val stockAmount = mutableMapOf<String, Long>()
 
-    @GetMapping("/info/stocks")
+    @GetMapping("/info")
     fun getStocksInfo(): List<StocksItem> {
         return stockPrices.map { StocksItem(it.key, it.value, stockAmount[it.key]!!) }
     }
